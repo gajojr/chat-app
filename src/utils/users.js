@@ -53,11 +53,19 @@ const addRoom = (io, room) => {
 
 const getRooms = () => rooms;
 
+const removeRoom = room => {
+    const index = rooms.indexOf(room);
+    if (index !== -1) {
+        rooms.splice(index, 1);
+    }
+}
+
 module.exports = {
     addUser,
     removeUser,
     getUser,
     getUsersInRoom,
     addRoom,
-    getRooms
+    getRooms,
+    removeRoom
 }

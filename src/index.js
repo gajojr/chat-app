@@ -4,7 +4,7 @@ const express = require('express');
 const socketio = require('socket.io');
 const Filter = require('bad-words');
 const { generateMessage, generateLocationMessage } = require('./utils/messages');
-const { addUser, removeUser, getUser, getUsersInRoom, addRoom, getRooms } = require('./utils/users')
+const { addUser, removeUser, getUser, getUsersInRoom, addRoom, getRooms, removeRoom } = require('./utils/users')
 
 const app = express();
 const server = http.createServer(app);
@@ -69,9 +69,15 @@ io.on('connection', socket => {
             io.to(user.room).emit('roomData', {
                 room: user.room,
                 users: getUsersInRoom(user.room)
-            })
+            });
+
+            if (!io.sockets.adapter.rooms.get(user.room)) {
+                removeRoom(user.room);
+                io.emit('sendActiveRooms', getRooms());
+                console.log(getRooms());
+            }
         }
     });
-})
+});
 
 server.listen(PORT);

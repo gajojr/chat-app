@@ -187,3 +187,32 @@ button:disabled {
     font-weight: 300;
     padding: 12px 24px 0 24px;
 }
+
+@media (max-width: 480px) {
+    .compose {
+        display: flex;
+        flex-direction: column;
+    }
+    #chat-form {
+        margin-bottom: 5px;
+        width: 100%;
+    }
+}
+
+@media (max-width: 390px) {
+    #chat-form {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+
+/* active rooms - home page*/
+
+.active-rooms {
+    margin-left: 10px;
+}
+
+#active-rooms-header {
+    color: #fff;
+}

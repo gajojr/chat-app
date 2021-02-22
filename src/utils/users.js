@@ -48,6 +48,8 @@ const getUsersInRoom = room => {
 const addRoom = (io, room) => {
     if (rooms.indexOf(room) === -1) {
         rooms.push(room);
+
+        return room;
     }
 }
 

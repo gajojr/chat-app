@@ -1,6 +1,7 @@
 const path = require('path');
 const http = require('http');
 const express = require('express');
+const helmet = require('helmet');
 const socketio = require('socket.io');
 const Filter = require('bad-words');
 const { generateMessage, generateLocationMessage } = require('./utils/messages');
@@ -14,11 +15,13 @@ const PORT = process.env.PORT || 3000;
 const publicDirectoryPath = path.join(__dirname, '../public');
 
 app.use(express.static(publicDirectoryPath));
+if (process.env.NODE_ENV === 'production') {
+    app.use(helmet());
+}
 
 io.on('connection', socket => {
     socket.on('showActiveRooms', () => {
         const activeRooms = getRooms();
-        console.log('active', activeRooms);
 
         socket.emit('sendActiveRooms', activeRooms);
     })
@@ -31,7 +34,12 @@ io.on('connection', socket => {
         }
 
         socket.join(user.room);
-        addRoom(io, user.room);
+        // check if this room is new
+        const answer = addRoom(io, user.room);
+        // if it's new add it to the list of active rooms
+        if (answer === user.room) {
+            io.emit('sendActiveRooms', getRooms());
+        }
         socket.emit('message', generateMessage('System', `Welcome ${user.username}!`));
         socket.broadcast.to(user.room).emit('message', generateMessage('System', `${user.username} has joined`));
         io.to(user.room).emit('roomData', {
@@ -74,7 +82,6 @@ io.on('connection', socket => {
             if (!io.sockets.adapter.rooms.get(user.room)) {
                 removeRoom(user.room);
                 io.emit('sendActiveRooms', getRooms());
-                console.log(getRooms());
             }
         }
     });

@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat app</title>
-    <link rel="stylesheet" href="./css/styles.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
     <link rel="shortcut icon" href="./img/favicon.png" type="image/x-icon">
 </head>
 
@@ -15,27 +15,20 @@
         <div class="centered-form__box">
             <h1>Join</h1>
             <form action="./chat.html">
-                <label for="">Display name</label>
-                <input type="text" name="username" placeholder="Display" required>
-                <label for="">Room</label>
-                <input type="text" name="room" placeholder="Room" required>
-                <button>Join</button>
+                <label for="username">Display name</label>
+                <input type="text" id="username" name="username" placeholder="Display" required>
+                <label for="room">Room</label>
+                <input type="text" id="room" name="room" placeholder="Room" required>
+                <button id="submit">Join</button>
             </form>
         </div>
 
         <div id="active-rooms" class="active-rooms">
+            <h1 id="active-rooms-header" style="display: none;">Active rooms:</h1>
             <ul id="active-rooms-list" class="active-rooms-list">
             </ul>
         </div>
     </div>
-
-    <!-- <script id="active-rooms-template" type="text/html">
-        <ul class="active-rooms-list">
-            {{#rooms}}
-            <li style="border: 2px solid white; padding: 2px; color: white;">promeni ovo</li>
-            {{/rooms}}
-        </ul>
-    </script> -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>

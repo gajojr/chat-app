@@ -1,23 +1,36 @@
 const socket = io();
 
-// const activeRoomsTemplate = document.getElementById('active-rooms-template').innerHTML;
-
 socket.on('sendActiveRooms', rooms => {
-    console.log(rooms);
-    // const html = Mustache.render(activeRoomsTemplate, {
-    //     rooms
-    // });
-    // document.getElementById('active-rooms').innerHTML = html;
     const $activeRoomList = document.getElementById('active-rooms-list');
+    // empty html on every refresh
     $activeRoomList.innerHTML = '';
-    rooms.forEach(room => {
-        const roomName = document.createTextNode(room);
-        const li = document.createElement('li');
-        li.style.color = 'white';
-        li.style.border = '2px solid white';
-        li.appendChild(roomName);
-        $activeRoomList.appendChild(li);
-    });
+    // set maxHeight for scrolling info -> add scroller when maxHeight is passed
+    $activeRoomList.style.maxHeight = `${document.querySelector('.centered-form__box').clientHeight}px`;
+    if (rooms.length > 0) {
+        document.getElementById('active-rooms-header').style.display = 'inline';
+        // if there is more than 4 active rooms add scroller
+        if (rooms.length > 4) {
+            document.getElementById('active-rooms-list').style.overflowY = 'scroll';
+        }
+
+        rooms.forEach(room => {
+            const $button = document.createElement('button');
+            $button.innerText = 'join';
+            $button.addEventListener('click', () => {
+                const username = document.getElementById('username').value;
+                document.getElementById('room').value = room;
+                document.getElementById('submit').click();
+            });
+            const roomName = document.createTextNode(room);
+            const $li = document.createElement('li');
+            $li.style.color = 'white';
+            $li.style.border = '2px solid white';
+            $li.style.padding = '5px';
+            $li.appendChild(roomName);
+            $li.appendChild($button);
+            $activeRoomList.appendChild($li);
+        });
+    }
 });
 
 socket.emit('showActiveRooms');

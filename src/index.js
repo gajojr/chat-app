@@ -4,7 +4,7 @@ const express = require('express');
 const socketio = require('socket.io');
 const Filter = require('bad-words');
 const { generateMessage, generateLocationMessage } = require('./utils/messages');
-const { addUser, removeUser, getUser, getUsersInRoom } = require('./utils/users')
+const { addUser, removeUser, getUser, getUsersInRoom, addRoom, getRooms } = require('./utils/users')
 
 const app = express();
 const server = http.createServer(app);
@@ -16,6 +16,13 @@ const publicDirectoryPath = path.join(__dirname, '../public');
 app.use(express.static(publicDirectoryPath));
 
 io.on('connection', socket => {
+    socket.on('showActiveRooms', () => {
+        const activeRooms = getRooms();
+        console.log('active', activeRooms);
+
+        socket.emit('sendActiveRooms', activeRooms);
+    })
+
     socket.on('join', ({ username, room }, callback) => {
         const { error, user } = addUser({ id: socket.id, username, room });
 
@@ -24,6 +31,7 @@ io.on('connection', socket => {
         }
 
         socket.join(user.room);
+        addRoom(io, user.room);
         socket.emit('message', generateMessage('System', `Welcome ${user.username}!`));
         socket.broadcast.to(user.room).emit('message', generateMessage('System', `${user.username} has joined`));
         io.to(user.room).emit('roomData', {

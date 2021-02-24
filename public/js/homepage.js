@@ -30,6 +30,8 @@ socket.on('sendActiveRooms', rooms => {
             $li.appendChild($button);
             $activeRoomList.appendChild($li);
         });
+    } else {
+        document.getElementById('active-rooms-header').style.display = 'none';
     }
 });
 
